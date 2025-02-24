@@ -19,7 +19,7 @@ exports.getAll = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
-    console.log(req.semos);
+    console.log(req.auth);
     const movie = await Movie.findById(req.params.id);
     res.status(200).json({
       status: 'success',
@@ -82,3 +82,5 @@ exports.delete = async (req, res) => {
     res.status(404).json({ status: 'fail', message: err });
   }
 };
+
+// exports.createByUser = async (req, res) => {}

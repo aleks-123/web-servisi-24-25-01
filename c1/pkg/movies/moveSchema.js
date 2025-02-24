@@ -30,6 +30,10 @@ const movieSchema = new mongoose.Schema({
   sliki: {
     type: [String],
   },
+  author: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
 });
 
 const Movie = mongoose.model('Movie', movieSchema);
