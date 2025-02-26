@@ -2,6 +2,7 @@ const User = require('../pkg/user/userSchema');
 //! npm install jsonwebtoken
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { promisify } = require('util');
 
 exports.signup = async (req, res) => {
   try {
@@ -84,6 +85,55 @@ exports.login = async (req, res) => {
       status: 'success',
       token,
     });
+  } catch (err) {
+    res.status(500).json({
+      status: 'fail',
+      err: err.message,
+    });
+  }
+};
+
+exports.protect = async (req, res, next) => {
+  try {
+    let token;
+
+    if (req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+    if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+
+    if (!token) {
+      return res.status(500).send('You are not logged in! please log in');
+    }
+
+    // function verifyToken(token) {
+    //   return new Promise((resolve, reject) => {
+    //     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    //       if (err) {
+    //         reject(new Error('Token verification failed'));
+    //       } else {
+    //         resolve(decodedToken);
+    //       }
+    //     });
+    //   });
+    // }
+    // const tokenDecoded = await verifyToken(token);
+    // console.log(tokenDecoded);
+    // const verifyAsync = promisify(jwt.verify);
+    // const decoded = await verifyAsync(token, process.env.JWT_SECRET);
+
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    const userTrue = await User.findById(decoded.id);
+    if (!userTrue) {
+      return res.status(401).send('User doesnt longer exist!');
+    }
+
+    req.auth = userTrue;
+
+    next();
   } catch (err) {
     res.status(500).json({
       status: 'fail',
