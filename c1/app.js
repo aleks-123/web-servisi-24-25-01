@@ -57,6 +57,6 @@ app.listen(process.env.PORT, (err) => {
 //! Zadaca za chas
 //! Kreiranje na forum ---
 //? get /posts za moze da gi zemame site posta
-//? get /post:id specificen post
+//? get /post:id ovde da se populirani plus specificen post
 //? post /posts da moze kako korisnici da kreirame post
 //? i da imame /myprofile kade sto kje gi prikazuvame samo nashite postovi
