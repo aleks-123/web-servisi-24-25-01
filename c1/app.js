@@ -40,7 +40,6 @@ app.use(
   // })
 );
 app.get('/movies/:id', movies.getOne);
-
 app.post('/movies', movies.create);
 app.patch('/movies/:id', movies.update);
 app.delete('/movies/:id', movies.delete);
