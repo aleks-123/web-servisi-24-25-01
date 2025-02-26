@@ -53,3 +53,10 @@ app.listen(process.env.PORT, (err) => {
   }
   console.log(`Service started successfully on port ${process.env.PORT}`);
 });
+
+//! Zadaca za chas
+//! Kreiranje na forum ---
+//? get /posts za moze da gi zemame site posta
+//? get /post:id specificen post
+//? post /posts da moze kako korisnici da kreirame post
+//? i da imame /myprofile kade sto kje gi prikazuvame samo nashite postovi
