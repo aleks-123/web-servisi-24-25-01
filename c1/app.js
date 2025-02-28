@@ -1,11 +1,14 @@
 //!! npm install dotenv
 //* So dotenv ja konfigurirame okolinata
+//!npm install ejs
 const jwt = require('express-jwt');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const movies = require('./handler/movies');
 const auth = require('./handler/authHandler');
+const viewHandler = require('./handler/viewHandler');
 const db = require('./pkg/db/index');
+var { unless } = require('express-unless');
 
 const app = express();
 
@@ -13,12 +16,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+//!
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+//!
+
 db.init();
 
 app.post('/api/v1/signup', auth.signup);
 app.post('/api/v1/login', auth.login);
-
-app.get('/movies', movies.getAll);
 
 app.use(
   jwt
@@ -37,15 +43,22 @@ app.use(
       },
     })
     .unless({
-      path: ['/api/v1/signup', '/api/v1/login', '/movies', '/movies/:id', { url: '/movies', methods: ['GET', 'POST'] }],
+      path: ['/api/v1/signup', '/api/v1/login', '/movies/:id', '/login'],
     })
 );
+
+app.get('/movies', movies.getAll);
 app.get('/movies/:id', movies.getOne);
 app.post('/movies', auth.protect, movies.create);
 app.patch('/movies/:id', movies.update);
 app.delete('/movies/:id', movies.delete);
 app.post('/movieByMe', auth.protect, movies.createByUser);
 app.get('/movieByMe', auth.protect, movies.getByUser);
+
+app.get('/login', viewHandler.getLoginForm);
+app.get('/viewmovies', viewHandler.movieView);
+
+// app.get()
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
