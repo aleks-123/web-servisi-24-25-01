@@ -37,7 +37,7 @@ app.use(
       },
     })
     .unless({
-      path: ['/api/v1/signup', '/api/v1/login', '/movies', '/movies/:id'],
+      path: ['/api/v1/signup', '/api/v1/login', '/movies', '/movies/:id', { url: '/movies', methods: ['GET', 'POST'] }],
     })
 );
 app.get('/movies/:id', movies.getOne);
