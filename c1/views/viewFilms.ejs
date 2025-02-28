@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= naslov %></title>
+  </head>
+  <body>
+    <h1><%= kategorija %></h1>
+    <p><%= test %></p>
+
+    <% if(movies.length === 0) { %>
+    <p>No movies found.</p>
+    <% } else { %> <% movies.forEach(movie => { %>
+    <div class="film">
+      <a href="/viewmovies/<%= movie._id %>">
+        <h2 class="film-title"><%= movie.title %></h2>
+      </a>
+      <!-- <img src="/img/movies/<%= movie.slika %>" alt="picture" /> -->
+      <p><%= movie.year %></p>
+
+      <a href="/deletemovie/<%= movie._id %>">Delete Movie</a>
+    </div>
+    <% }); %><% } %>
+
+    <form action="/createmovie" method="POST">
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="title" />
+      <label for="year">Year</label>
+      <input type="number" name="year" id="year" />
+      <label for="imbdRating">IMBD-Rating:</label>
+      <input type="text" name="imdbRating" id="imdbRating" />
+      <button type="submit" name="createMovie">Vnesi nov film</button>
+    </form>
+  </body>
+</html>

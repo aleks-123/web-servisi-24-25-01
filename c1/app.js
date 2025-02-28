@@ -57,6 +57,8 @@ app.get('/movieByMe', auth.protect, movies.getByUser);
 
 app.get('/login', viewHandler.getLoginForm);
 app.get('/viewmovies', viewHandler.movieView);
+app.post('/createmovie', viewHandler.createMovie);
+app.get('/deletemovie/:id', viewHandler.deleteMovie);
 
 // app.get()
 
