@@ -1,7 +1,64 @@
 const Movie = require('../pkg/movies/moveSchema');
+//! npm install multer
+//! npm install uuid
+
+const multer = require('multer');
+const uuid = require('uuid');
+
+//* GENERATOR ZA ID
+const imageId = uuid.v4();
+
+//! multerStorage - definirame na koja lokacija i kakvo ime bi imale slikite
+// mimetype = image/jp
+const multerStorage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, 'public/img/movies');
+  },
+  filename: (req, file, callback) => {
+    //? - movie-uuid-timestamp.jpg - vakov format
+    const ext = file.mimetype.split('/')[1];
+    callback(null, `movie-${imageId}-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith('image')) {
+    callback(null, true);
+  } else {
+    callback(new Error('File type is not supported'), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+//! poedinecna slika
+exports.uploadFilmPhotos = upload.single('slika');
+//! povekje sliki
+// exports.uploadFilmsSliki = upload.array('sliki', 3);
+//!kombinacija
+// exports.uploadFilmsPhotos = upload.fields([
+//   { name: 'slika', maxCount: 1 },
+//   { name: 'sliki', maxCount: 3 },
+// ]);
 
 exports.update = async (req, res) => {
   try {
+    console.log(req.file);
+    console.log(req.body);
+
+    if (req.file) {
+      const fileName = req.file.filename;
+      req.body.slika = fileName;
+    }
+
+    // if (req.files && req.files.sliki) {
+    //   const filenames = req.files.sliki.map((file) => file.fileName);
+    //   req.body.sliki = filenames;
+    // }
+
     const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
