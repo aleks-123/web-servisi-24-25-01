@@ -8,7 +8,6 @@ const movies = require('./handler/movies');
 const auth = require('./handler/authHandler');
 const viewHandler = require('./handler/viewHandler');
 const db = require('./pkg/db/index');
-var { unless } = require('express-unless');
 
 const app = express();
 

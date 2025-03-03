@@ -1,5 +1,26 @@
 const Movie = require('../pkg/movies/moveSchema');
 
+exports.update = async (req, res) => {
+  try {
+    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        movie,
+      },
+    });
+  } catch (err) {
+    console.log;
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
 exports.getAll = async (req, res) => {
   try {
     //.select("")
@@ -28,27 +49,6 @@ exports.getOne = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err,
-    });
-  }
-};
-
-exports.update = async (req, res) => {
-  try {
-    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    res.status(200).json({
-      status: 'success',
-      data: {
-        movie,
-      },
-    });
-  } catch (err) {
-    console.log;
     res.status(404).json({
       status: 'fail',
       message: err,
