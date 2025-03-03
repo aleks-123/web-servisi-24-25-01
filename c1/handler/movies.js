@@ -35,29 +35,45 @@ const upload = multer({
 });
 
 //! poedinecna slika
-exports.uploadFilmPhotos = upload.single('slika');
+// exports.uploadFilmPhotos = upload.single('test');
 //! povekje sliki
 // exports.uploadFilmsSliki = upload.array('sliki', 3);
 //!kombinacija
-// exports.uploadFilmsPhotos = upload.fields([
-//   { name: 'slika', maxCount: 1 },
-//   { name: 'sliki', maxCount: 3 },
-// ]);
+exports.uploadFilmsPhotos = upload.fields([
+  { name: 'slika', maxCount: 1 },
+  { name: 'sliki', maxCount: 3 },
+]);
 
 exports.update = async (req, res) => {
   try {
-    console.log(req.file);
-    console.log(req.body);
-
-    if (req.file) {
-      const fileName = req.file.filename;
-      req.body.slika = fileName;
-    }
-
-    // if (req.files && req.files.sliki) {
-    //   const filenames = req.files.sliki.map((file) => file.fileName);
+    // console.log(req.file);
+    console.log(req.files);
+    // console.log(req.body);
+    //! Single upload
+    // if (req.file) {
+    //   const fileName = req.file.filename;
+    //   req.body.slika = fileName;
+    //   console.log(req.body);
+    // }
+    //! Array upload
+    // if (req.files) {
+    //   const filenames = req.files.map((file) => file.filename);
+    //   console.log('exp', filenames);
     //   req.body.sliki = filenames;
     // }
+
+    //! Combination upload
+    //* uploadiraj main slika
+    if (req.files && req.files.slika) {
+      const fileName = req.files.slika[0].filename;
+      req.body.slika = fileName;
+    }
+    //* uploadiraj sporedni sliki
+    if (req.files && req.files.sliki) {
+      const filenames = req.files.sliki.map((file) => file.filename);
+      console.log('exp', filenames);
+      req.body.sliki = filenames;
+    }
 
     const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -73,7 +89,7 @@ exports.update = async (req, res) => {
     console.log;
     res.status(404).json({
       status: 'fail',
-      message: err,
+      message: err.message,
     });
   }
 };

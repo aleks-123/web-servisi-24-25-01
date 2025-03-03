@@ -31,7 +31,6 @@ app.use(
       algorithms: ['HS256'],
       secret: process.env.JWT_SECRET,
       getToken: (req) => {
-        console.log(req.cookies);
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
           return req.headers.authorization.split(' ')[1];
         }
@@ -49,7 +48,7 @@ app.use(
 app.get('/movies', movies.getAll);
 app.get('/movies/:id', movies.getOne);
 app.post('/movies', auth.protect, movies.create);
-app.patch('/movies/:id', movies.uploadFilmPhotos, movies.update);
+app.patch('/movies/:id', movies.uploadFilmsPhotos, movies.update);
 app.delete('/movies/:id', movies.delete);
 app.post('/movieByMe', auth.protect, movies.createByUser);
 app.get('/movieByMe', auth.protect, movies.getByUser);
