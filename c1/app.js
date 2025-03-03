@@ -45,13 +45,14 @@ app.use(
     })
 );
 
-app.get('/movies', movies.getAll);
-app.get('/movies/:id', movies.getOne);
-app.post('/movies', auth.protect, movies.create);
-app.patch('/movies/:id', movies.uploadFilmsPhotos, movies.update);
-app.delete('/movies/:id', movies.delete);
-app.post('/movieByMe', auth.protect, movies.createByUser);
-app.get('/movieByMe', auth.protect, movies.getByUser);
+app.get('/api/v1/movies', movies.getAll);
+app.get('/api/v1/movies/:id', movies.getOne);
+app.post('/api/v1/movies', auth.protect, movies.create);
+app.patch('/api/v1/movies/:id', movies.uploadFilmsPhotos, movies.update);
+app.delete('/api/v1/movies/:id', movies.delete);
+
+app.post('/api/v1/movieByMe', auth.protect, movies.createByUser);
+app.get('/api/v1/movieByMe', auth.protect, movies.getByUser);
 
 app.get('/login', viewHandler.getLoginForm);
 app.get('/viewmovies', viewHandler.movieView);
