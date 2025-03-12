@@ -50,6 +50,7 @@ app.get('/api/v1/movies/:id', movies.getOne);
 app.post('/api/v1/movies', auth.protect, movies.create);
 app.patch('/api/v1/movies/:id', movies.uploadFilmsPhotos, movies.update);
 app.delete('/api/v1/movies/:id', movies.delete);
+app.get('/api/v1/getMilki/:yearEnd/:startYear');
 
 app.post('/api/v1/movieByMe', auth.protect, movies.createByUser);
 app.get('/api/v1/movieByMe', auth.protect, movies.getByUser);
@@ -74,3 +75,7 @@ app.listen(process.env.PORT, (err) => {
 //? get /post:id ovde da se populirani plus specificen post
 //? post /posts da moze kako korisnici da kreirame post
 //? i da imame /myprofile kade sto kje gi prikazuvame samo nashite postovi
+
+//?
+//! za forumot, sekoj korisnik da ima default slika - covece
+//! na patch metoda da moze korisnikot da ja promeni profilnata slika

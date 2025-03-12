@@ -35,7 +35,7 @@ const upload = multer({
 });
 
 //! poedinecna slika
-// exports.uploadFilmPhotos = upload.single('test');
+// exports.uploadFilmPhoto = upload.single('test');
 //! povekje sliki
 // exports.uploadFilmsSliki = upload.array('sliki', 3);
 //!kombinacija
@@ -97,7 +97,17 @@ exports.update = async (req, res) => {
 exports.getAll = async (req, res) => {
   try {
     //.select("")
-    let movies = await Movie.find().populate('author', '-password').select('-slika');
+    console.log(req.query);
+    const queryObj = { ...req.query };
+
+    let queryString = JSON.stringify(queryObj);
+
+    queryString = queryString.replace(/\b(gte|gt|lte|lt|regex|options)\b/g, (match) => `$${match}`);
+
+    const query = JSON.parse(queryString);
+    console.log(query);
+
+    let movies = await Movie.find(query).populate('author', '-password').select('-slika');
     res.status(200).json({
       status: 'success',
       data: {
