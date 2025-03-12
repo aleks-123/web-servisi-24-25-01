@@ -3,6 +3,7 @@ const User = require('../pkg/user/userSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { promisify } = require('util');
+const sendMail = require('./emailHandler');
 
 exports.signup = async (req, res) => {
   try {
@@ -25,6 +26,12 @@ exports.signup = async (req, res) => {
     //   secure: false,
     //   httpOnly: true,
     // });
+
+    await sendMail({
+      email: newUser.email,
+      subject: 'Register successfully',
+      messages: `Thank you ${newUser.name} for creating a account `,
+    });
 
     res.status(201).json({
       status: 'Success',

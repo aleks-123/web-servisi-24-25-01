@@ -31,7 +31,7 @@ const sendEmail = async (options) => {
 
   // 2) definiranje na opciite na mailot
   const mailOptions = {
-    from: 'Apple <apple@apple.com',
+    from: 'semos <semos@edu.com',
     to: options.email,
     subject: options.subject,
     text: options.messages,
