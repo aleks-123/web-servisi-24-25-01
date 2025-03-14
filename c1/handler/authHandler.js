@@ -176,12 +176,61 @@ exports.forgotPassword = async (req, res) => {
     await sendEmail({
       email: user.email,
       subject: 'Vashiot resetiracki token (30 minuti validen)',
-      message: message,
+      messages: message,
     });
 
     res.status(200).json({
       status: 'success',
       message: 'url token send to email',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'fail',
+      err: err.message,
+    });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    // const token = req.params.token;
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    //! 1) Go barame korisnikot
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    //! 2) proveruvame vo slucaj da ne go pronajde korisnikot
+    if (!user) {
+      return res.status(400).send('Token is invalid or expired');
+    }
+
+    user.password = req.body.password;
+    user.passwordResetExpires = undefined;
+    user.passwordResetToken = undefined;
+
+    await user.save();
+
+    //! 3) kreiranje na token
+    const token = jwt.sign(
+      { id: user._id, name: user.name, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES,
+      }
+    );
+
+    res.cookie('jwt', token, {
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 10000),
+      secure: false,
+      httpOnly: true,
+    });
+
+    res.status(201).json({
+      status: 'success',
+      token,
     });
   } catch (err) {
     res.status(500).json({
