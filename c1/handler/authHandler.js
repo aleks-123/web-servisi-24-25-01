@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { promisify } = require('util');
 const sendMail = require('./emailHandler');
+const crypto = require('crypto');
+const sendEmail = require('./emailHandler');
 
 exports.signup = async (req, res) => {
   try {
@@ -141,6 +143,46 @@ exports.protect = async (req, res, next) => {
     req.auth = userTrue;
 
     next();
+  } catch (err) {
+    res.status(500).json({
+      status: 'fail',
+      err: err.message,
+    });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    //! 1) go barame korisnikot
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res.status(404).send('This user doesnt exist');
+    }
+
+    //! 2) Generirame resitiracki token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.passwordResetExpires = Date.now() + 30 * 60 * 1000;
+    //! 3) go azurirame korisnikot
+    await user.save({ validateBeforeSave: false });
+
+    //! 4) kreiranje na resetiracki Url
+    const resetUrl = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`;
+
+    const message = `Ja zaboravivte lozinkata, ve molime iskoristete Patch request so vashata nova lozinka - ova e reset url ${resetUrl}`;
+
+    //! 5) Isprakjanje na mail so resetirackiot url
+    await sendEmail({
+      email: user.email,
+      subject: 'Vashiot resetiracki token (30 minuti validen)',
+      message: message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'url token send to email',
+    });
   } catch (err) {
     res.status(500).json({
       status: 'fail',

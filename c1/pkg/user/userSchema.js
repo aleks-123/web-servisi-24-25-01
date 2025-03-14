@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
     // minLength: [8, "Korisnickata lozinka mora da ima najmalce 8 karakteriu"]
     // validate: [validator.isStrongPassword, 'Korisnickata lozinka mora da ima namajlce 1 karakter 1 brojka 1 simbol'],
   },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {

@@ -25,6 +25,9 @@ db.init();
 app.post('/api/v1/signup', auth.signup);
 app.post('/api/v1/login', auth.login);
 
+app.post('/forgotPassword', auth.forgotPassword);
+// app.patch("/resetPassword/:token")
+
 app.use(
   jwt
     .expressjwt({
