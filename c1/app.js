@@ -25,8 +25,17 @@ db.init();
 app.post('/api/v1/signup', auth.signup);
 app.post('/api/v1/login', auth.login);
 
-app.post('/forgotPassword', auth.forgotPassword);
-app.patch('/resetPassword/:token', auth.resetPassword);
+// app.post('/forgotPassword', auth.forgotPassword);
+// app.patch('/resetPassword/:token', auth.resetPassword);
+
+//! na get prikazuvame izgled
+app.get('/forgotPassword', viewHandler.getForgotPasswordForm);
+//! izvrsuvame logika
+app.post('/forgotPassword', viewHandler.submitForgotPassword);
+//! prikazuvame izgled
+app.get('/resetPassword/:token', viewHandler.getResetPasswordForm);
+//! izvrsuvame logika
+app.post('/resetPassword/:token', viewHandler.submitResetPassword);
 
 app.use(
   jwt
